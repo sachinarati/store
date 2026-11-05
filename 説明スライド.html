@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>静鉄ストア チラシ商品検索 v4 ― 説明スライド</title>
+<style>
+  :root{
+    --green:#1a7a3c; --green-d:#12602e; --green-l:#e8f5ec;
+    --orange:#ff6a1a; --ink:#1d2b22; --sub:#5c6b61; --blue:#2563c9;
+    --bg1:#f3faf5; --bg2:#e6f3ea; --card:#fff; --line:#d8e6dc;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html,body{height:100%}
+  body{font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif; color:var(--ink); background:#0d3b22; overflow:hidden}
+
+  .stage{position:fixed; inset:0; display:flex; align-items:center; justify-content:center}
+  .slide{
+    display:none; width:100%; height:100%; padding:6vh 8vw 10vh;
+    flex-direction:column; justify-content:center;
+    background:linear-gradient(135deg,var(--bg1),var(--bg2)); animation:fade .4s ease;
+  }
+  .slide.active{display:flex}
+  @keyframes fade{from{opacity:0; transform:translateY(14px)}to{opacity:1; transform:none}}
+
+  .kicker{color:var(--green); font-weight:800; font-size:clamp(14px,1.8vw,20px); letter-spacing:.08em; margin-bottom:10px}
+  h1{font-size:clamp(28px,5vw,56px); line-height:1.25; color:var(--green-d)}
+  h2{font-size:clamp(24px,3.6vw,40px); line-height:1.3; color:var(--green-d); margin-bottom:22px}
+  .lead{font-size:clamp(16px,2.1vw,24px); color:var(--sub); margin-top:16px; line-height:1.8}
+  .big-emoji{font-size:clamp(50px,9vw,110px); margin-bottom:10px}
+
+  ul.points{list-style:none; display:flex; flex-direction:column; gap:14px; margin-top:6px}
+  ul.points li{
+    background:var(--card); border:1px solid var(--line); border-left:6px solid var(--green);
+    border-radius:12px; padding:16px 20px; font-size:clamp(15px,1.9vw,22px); line-height:1.7;
+    box-shadow:0 3px 10px rgba(0,0,0,.05); display:flex; gap:14px; align-items:flex-start;
+  }
+  ul.points li .ic{font-size:clamp(22px,2.6vw,32px); flex-shrink:0}
+  ul.points li b{color:var(--green-d)}
+  .note{color:var(--sub); font-size:clamp(13px,1.6vw,17px); line-height:1.7}
+
+  .cards{display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:6px}
+  .fcard{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px 20px; box-shadow:0 3px 10px rgba(0,0,0,.05)}
+  .fcard .h{font-size:clamp(17px,2.1vw,24px); font-weight:800; color:var(--green-d); display:flex; gap:10px; align-items:center; margin-bottom:8px}
+  .fcard .h .e{font-size:clamp(24px,3vw,34px)}
+  .fcard p{font-size:clamp(13px,1.6vw,18px); color:var(--sub); line-height:1.7}
+
+  .two{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:6px}
+  .rolecard{background:var(--card); border:2px solid var(--line); border-radius:16px; padding:22px; box-shadow:0 3px 10px rgba(0,0,0,.05)}
+  .rolecard.user{border-color:var(--green)}
+  .rolecard.admin{border-color:var(--orange)}
+  .rolecard .rt{font-size:clamp(20px,2.6vw,30px); font-weight:800; margin-bottom:10px}
+  .rolecard.user .rt{color:var(--green-d)}
+  .rolecard.admin .rt{color:var(--orange)}
+  .rolecard ul{list-style:none; display:flex; flex-direction:column; gap:8px}
+  .rolecard li{font-size:clamp(14px,1.8vw,20px); display:flex; gap:8px; align-items:flex-start}
+
+  .flow{display:flex; gap:14px; flex-wrap:wrap; margin-top:10px}
+  .step{flex:1; min-width:150px; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px; text-align:center; position:relative}
+  .step .n{position:absolute; top:-14px; left:50%; transform:translateX(-50%); background:var(--orange); color:#fff; width:30px; height:30px; border-radius:50%; font-weight:800; display:flex; align-items:center; justify-content:center}
+  .step .e{font-size:clamp(34px,5vw,52px); margin:8px 0}
+  .step .t{font-weight:800; color:var(--green-d); font-size:clamp(14px,1.8vw,20px)}
+  .step .d{color:var(--sub); font-size:clamp(12px,1.5vw,16px); margin-top:4px}
+
+  .tag{display:inline-block; background:var(--green); color:#fff; border-radius:20px; padding:5px 14px; font-size:clamp(12px,1.5vw,16px); font-weight:700; margin:4px 4px 0 0}
+  .tag.o{background:var(--orange)} .tag.b{background:var(--blue)}
+
+  .slide.title{background:linear-gradient(135deg,var(--green),var(--green-d)); color:#fff; align-items:flex-start}
+  .slide.title .kicker{color:#bde8c9}
+  .slide.title h1{color:#fff}
+  .slide.title .lead{color:#dff0e4}
+
+  .bar{position:fixed; top:0; left:0; height:5px; background:var(--orange); z-index:10; transition:width .3s}
+  .ctrl{position:fixed; bottom:18px; right:20px; display:flex; gap:10px; z-index:10; align-items:center}
+  .ctrl button{border:none; background:rgba(0,0,0,.35); color:#fff; width:46px; height:46px; border-radius:50%; font-size:20px; cursor:pointer; transition:.15s}
+  .ctrl button:hover{background:var(--orange)}
+  .pageno{position:fixed; bottom:24px; left:22px; z-index:10; color:rgba(255,255,255,.7); font-size:14px; background:rgba(0,0,0,.3); padding:6px 12px; border-radius:20px}
+  .hint{position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:10; color:rgba(255,255,255,.65); font-size:13px}
+  @media(max-width:640px){ .cards,.two{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="bar" id="bar"></div>
+<div class="stage" id="stage">
+
+  <!-- 1. Title -->
+  <section class="slide title active">
+    <div class="kicker">社内説明資料 ・ 2026</div>
+    <h1>🛒 静鉄ストア<br>チラシ商品検索システム v4</h1>
+    <div class="lead">
+      チラシのお買い得品を、かんたんに検索。<br>
+      今日の献立まで提案します。
+    </div>
+    <div style="margin-top:28px">
+      <span class="tag">商品検索</span>
+      <span class="tag o">献立のヒント</span>
+      <span class="tag b">管理者・お客様モード</span>
+    </div>
+  </section>
+
+  <!-- 2. What is it -->
+  <section class="slide">
+    <div class="kicker">これは何？</div>
+    <h2>チラシを「探せる・使える」アプリ</h2>
+    <ul class="points">
+      <li><span class="ic">📄</span><span><b>管理者がチラシPDFを取り込む</b>と、商品データになります。</span></li>
+      <li><span class="ic">🔍</span><span>ほしい商品を<b>すぐに検索</b>できます。「300円以下」のような言葉でもOK。</span></li>
+      <li><span class="ic">🍳</span><span>セール中の食材から<b>作れる料理</b>を提案します。</span></li>
+      <li><span class="ic">💻</span><span><b>ふつうのWebサイト</b>です。スマホでもパソコンでも使えます。</span></li>
+    </ul>
+  </section>
+
+  <!-- 3. Main features -->
+  <section class="slide">
+    <div class="kicker">主な機能</div>
+    <h2>できること</h2>
+    <div class="cards">
+      <div class="fcard"><div class="h"><span class="e">🔍</span>商品検索</div><p>商品名・部門・価格でさがせます。「一番安い野菜」なども可能。</p></div>
+      <div class="fcard"><div class="h"><span class="e">📋</span>詳細を見る</div><p>販売期間・税抜/税込・産地などを表示します。</p></div>
+      <div class="fcard"><div class="h"><span class="e">🍳</span>献立のヒント</div><p>食材から作れる料理を提案。<b>調理時間の目安</b>つき。</p></div>
+      <div class="fcard"><div class="h"><span class="e">▶</span>作り方の動画</div><p>各料理に<b>YouTubeの作り方リンク</b>がついています。</p></div>
+    </div>
+  </section>
+
+  <!-- 4. Roles (new in v4) -->
+  <section class="slide">
+    <div class="kicker">v4の新しい機能</div>
+    <h2>2つのモード（管理者・お客様）</h2>
+    <div class="two">
+      <div class="rolecard user">
+        <div class="rt">👥 お客様モード</div>
+        <ul>
+          <li><span>🔍</span><span>商品の検索ができます</span></li>
+          <li><span>📋</span><span>商品の詳細を見られます</span></li>
+          <li><span>🍳</span><span>献立のヒントを見られます</span></li>
+          <li><span>🚫</span><span>データの取り込みボタンは<b>表示されません</b></span></li>
+        </ul>
+      </div>
+      <div class="rolecard admin">
+        <div class="rt">🔑 管理者モード</div>
+        <ul>
+          <li><span>✅</span><span>お客様の機能すべて</span></li>
+          <li><span>📄</span><span>PDFの取り込みができます</span></li>
+          <li><span>💾</span><span>データの保存・読み込みができます</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="lead" style="margin-top:16px">画面右上のボタンで、かんたんに切り替えられます（最初は「お客様」）。</div>
+  </section>
+
+  <!-- 5. How to use -->
+  <section class="slide">
+    <div class="kicker">使い方</div>
+    <h2>3ステップでかんたん</h2>
+    <div class="flow">
+      <div class="step"><div class="n">1</div><div class="e">📄</div><div class="t">取り込む</div><div class="d">管理者がチラシPDFを<br>取り込む（最初に1回）</div></div>
+      <div class="step"><div class="n">2</div><div class="e">🔍</div><div class="t">さがす</div><div class="d">お客様はキーワードや<br>「300円以下」で検索</div></div>
+      <div class="step"><div class="n">3</div><div class="e">🍳</div><div class="t">決める</div><div class="d">詳細を見る・<br>献立のヒントを得る</div></div>
+    </div>
+    <div class="lead">お客様はさがして決めるだけ。インストールは不要です。</div>
+  </section>
+
+  <!-- 6. Notes -->
+  <section class="slide">
+    <div class="kicker">ご注意</div>
+    <h2>知っておきたいこと</h2>
+    <ul class="points">
+      <li><span class="ic">🔑</span><span>モード切替は<b>かんたんな画面の切替</b>です。パスワードはありません。本格的な制限が必要なときは別の仕組みが必要です。</span></li>
+      <li><span class="ic">📄</span><span>データは<b>管理者が取り込んだPDF</b>から作ります。取り込み前は「準備中」と表示されます。</span></li>
+      <li><span class="ic">🏪</span><span>価格・在庫のリアルタイム確認はしません。<b>最終確認は店頭・チラシ</b>でお願いします。</span></li>
+    </ul>
+  </section>
+
+  <!-- 7. Summary -->
+  <section class="slide title">
+    <div class="big-emoji">🛒🍳</div>
+    <div class="kicker">まとめ</div>
+    <h1>さがす → えらぶ → つくる<br>がこれ1つで</h1>
+    <div class="lead">
+      チラシのお買い得品がすぐ見つかり、献立まで決まる。<br>
+      お客様にも、お店にもうれしいツールです。
+    </div>
+    <div style="margin-top:26px" class="note">ご質問・ご要望はお気軽にどうぞ。この場でデモをお見せできます。</div>
+  </section>
+
+</div>
+
+<div class="pageno" id="pageno">1 / 7</div>
+<div class="hint">← → キー、または画面クリックでめくれます</div>
+<div class="ctrl">
+  <button id="prev" title="前へ">‹</button>
+  <button id="next" title="次へ">›</button>
+</div>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var i = 0;
+  var bar = document.getElementById('bar');
+  var pageno = document.getElementById('pageno');
+  function show(n){
+    i = Math.max(0, Math.min(slides.length-1, n));
+    slides.forEach(function(s,idx){ s.classList.toggle('active', idx===i); });
+    bar.style.width = ((i+1)/slides.length*100) + '%';
+    pageno.textContent = (i+1) + ' / ' + slides.length;
+  }
+  function next(){ show(i+1); }
+  function prev(){ show(i-1); }
+  document.getElementById('next').addEventListener('click', function(e){ e.stopPropagation(); next(); });
+  document.getElementById('prev').addEventListener('click', function(e){ e.stopPropagation(); prev(); });
+  document.addEventListener('keydown', function(e){
+    if(e.key==='ArrowRight' || e.key===' ' || e.key==='PageDown') next();
+    else if(e.key==='ArrowLeft' || e.key==='PageUp') prev();
+    else if(e.key==='Home') show(0);
+    else if(e.key==='End') show(slides.length-1);
+  });
+  document.getElementById('stage').addEventListener('click', function(e){
+    if(e.clientX > window.innerWidth/2) next(); else prev();
+  });
+  show(0);
+})();
+</script>
+</body>
+</html>
